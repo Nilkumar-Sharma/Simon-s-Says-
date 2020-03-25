@@ -7,6 +7,10 @@ $(document).ready(() => {
     $("div[type='button']").click(e => {
         if (gameOn == false) return;
         userClicked.push(e.target.id);
+        e.target.classList.add("pressed");
+        $("#"+e.target.id+"Audio")[0].play();
+        setTimeout(()=>{e.target.classList.remove("pressed")},100);
+        
         if (userClicked.length && userClicked[userClicked.length - 1] == createdSequence[userClicked.length - 1]) {
             if (userClicked.toString() == createdSequence.toString()) {
                 increaseLevel();
@@ -49,5 +53,5 @@ function resetGame() {
     level = 1;
     userClicked = [];
     createdSequence = [];
-    $("#level-title").text("Press A Key to Start");
+    $("#level-title").text("Game Over,Press A Key to Start");
 }
