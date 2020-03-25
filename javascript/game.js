@@ -1,27 +1,29 @@
-var gameOn = false;
+var gameStarted = false;
 var level = 1;
 var buttonId = ["green", "red", "yellow", "blue"];
 var userClicked = [];
 var createdSequence = [];
+
 $(document).ready(() => {
-    $("div[type='button']").click(e => {
-        if (gameOn == false) return;
-        userClicked.push(e.target.id);
+    $(".btn").click(e => {
+        if (gameStarted == false) return;
+        userClicked.push(e.target.id); //using js
+        console.log($(e.target).attr("id")); //using jquery
         e.target.classList.add("pressed");
-        $("#"+e.target.id+"Audio")[0].play();
-        setTimeout(()=>{e.target.classList.remove("pressed")},100);
-        
+        $("#" + e.target.id + "Audio")[0].play();
+        setTimeout(() => { e.target.classList.remove("pressed") }, 100);
         if (userClicked.length && userClicked[userClicked.length - 1] == createdSequence[userClicked.length - 1]) {
             if (userClicked.toString() == createdSequence.toString()) {
                 increaseLevel();
             }
         } else {
-            resetGame();
+            playSound("wrong.mp3");
+            setTimeout(resetGame(), 200);
+
         }
     });
     $(document).keypress((event) => {
-        if (event.key == "A" || event.key == "a") {
-            console.log(event.key);
+        if (gameStarted == false && (event.key == "A" || event.key == "a")) {
             startGame();
         }
     });
@@ -33,23 +35,26 @@ function createSequence() {
     }
     return sq;
 }
+function playSound(name) {
+    var audioFile = new Audio("/sounds/" + name);
+    audioFile.play();
+}
 function startGame() {
     userClicked = [];
     createdSequence = [];
     $("#level-title").text("Level " + level);
     createdSequence = createSequence();
     createdSequence.forEach(x => {
-        $("#" + x).delay(2000 - level * 50).fadeOut().fadeIn();
-        console.log('done');
+        $("#" + x).delay(600 - level * 5).fadeOut().fadeIn();
     });
-    gameOn = true;
+    gameStarted = true;
 }
 function increaseLevel() {
     level++;
     startGame();
 }
 function resetGame() {
-    gameOn = false;
+    gameStarted = false;
     level = 1;
     userClicked = [];
     createdSequence = [];
